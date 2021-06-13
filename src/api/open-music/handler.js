@@ -1,4 +1,4 @@
-class MusicsHandler {
+class OpenMusicHandler {
   constructor(service) {
     this._service = service;
 
@@ -103,4 +103,4 @@ class MusicsHandler {
   }
 }
 
-module.exports = MusicsHandler;
+module.exports = OpenMusicHandler;

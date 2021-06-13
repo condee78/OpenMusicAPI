@@ -1,9 +1,9 @@
 const Hapi = require("@hapi/hapi");
-const musics = require("./api/musics");
-const MusicsService = require("./services/inMemory/MusicsService");
+const openMusic = require("./api/open-music");
+const OpenMusicService = require("./services/inMemory/OpenMusicService");
 
 const init = async () => {
-  const musicsService = new MusicsService();
+  const openMusicService = new OpenMusicService();
 
   const server = Hapi.server({
     port: 5000,
@@ -16,9 +16,9 @@ const init = async () => {
   });
 
   await server.register({
-    plugin: musics,
+    plugin: openMusic,
     options: {
-      service: musicsService,
+      service: openMusicService,
     },
   });
 

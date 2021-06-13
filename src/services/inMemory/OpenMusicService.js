@@ -1,6 +1,6 @@
 const { nanoid } = require("nanoid");
 
-class MusicsService {
+class OpenMusicService {
   constructor() {
     this._notes = [];
   }
@@ -69,4 +69,4 @@ class MusicsService {
   }
 }
 
-module.exports = MusicsService;
+module.exports = OpenMusicService;
