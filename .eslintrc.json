@@ -11,6 +11,17 @@
   "rules": {
     "no-console": "off",
     "linebreak-style": "off",
-    "quotes": "off"
+    "quotes": "off",
+    "no-underscore-dangle": "off",
+    "indent": "off",
+    "comma-dangle": "off",
+    "no-plusplus": "off",
+    "no-restricted-syntax": "off",
+    "implicit-arrow-linebreak": "off",
+    "radix": "off",
+    "operator-linebreak": "off",
+    "no-restricted-globals": "off",
+    "consistent-return": "off",
+    "no-prototype-builtins": "off"
   }
 }

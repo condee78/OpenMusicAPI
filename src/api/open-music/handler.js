@@ -1,6 +1,9 @@
+const ClientError = require("../../exceptions/ClientError");
+
 class OpenMusicHandler {
-  constructor(service) {
+  constructor(service, validator) {
     this._service = service;
+    this._validator = validator;
 
     this.postNoteHandler = this.postNoteHandler.bind(this);
     this.getNotesHandler = this.getNotesHandler.bind(this);
@@ -11,6 +14,8 @@ class OpenMusicHandler {
 
   postNoteHandler(request, h) {
     try {
+      this._validator.validateOpenMusicPayload(request.payload);
+
       const { title = "untitled", body, tags } = request.payload;
 
       const noteId = this._service.addNote({ title, body, tags });
@@ -25,11 +30,22 @@ class OpenMusicHandler {
       response.code(201);
       return response;
     } catch (error) {
+      if (error instanceof ClientError) {
+        const response = h.response({
+          status: "fail",
+          message: error.message,
+        });
+        response.code(error.statusCode);
+        return response;
+      }
+
+      // Server ERROR!
       const response = h.response({
-        status: "fail",
-        message: error.message,
+        status: "error",
+        message: "Maaf, terjadi kegagalan pada server kami.",
       });
-      response.code(400);
+      response.code(500);
+      console.error(error);
       return response;
     }
   }
@@ -44,7 +60,7 @@ class OpenMusicHandler {
     };
   }
 
-  getNoteByIdHandler() {
+  getNoteByIdHandler(request, h) {
     try {
       const { id } = request.params;
       const note = this._service.getNoteById(id);
@@ -55,17 +71,30 @@ class OpenMusicHandler {
         },
       };
     } catch (error) {
+      if (error instanceof ClientError) {
+        const response = h.response({
+          status: "fail",
+          message: error.message,
+        });
+        response.code(error.statusCode);
+        return response;
+      }
+
+      // Server ERROR!
       const response = h.response({
-        status: "fail",
-        message: error.message,
+        status: "error",
+        message: "Maaf, terjadi kegagalan pada server kami.",
       });
-      response.code(404);
+      response.code(500);
+      console.error(error);
       return response;
     }
   }
 
-  putNoteByIdHandler() {
+  putNoteByIdHandler(request, h) {
     try {
+      this._validator.validateOpenMusicPayload(request.payload);
+
       const { id } = request.params;
 
       this._service.editNoteById(id, request.payload);
@@ -75,16 +104,27 @@ class OpenMusicHandler {
         message: "Catatan berhasil diperbarui",
       };
     } catch (error) {
+      if (error instanceof ClientError) {
+        const response = h.response({
+          status: "fail",
+          message: error.message,
+        });
+        response.code(error.statusCode);
+        return response;
+      }
+
+      // Server ERROR!
       const response = h.response({
-        status: "fail",
-        message: error.message,
+        status: "error",
+        message: "Maaf, terjadi kegagalan pada server kami.",
       });
-      response.code(404);
+      response.code(500);
+      console.error(error);
       return response;
     }
   }
 
-  deleteNoteByIdHandler() {
+  deleteNoteByIdHandler(request, h) {
     try {
       const { id } = request.params;
       this._service.deleteNoteById(id);
@@ -93,11 +133,22 @@ class OpenMusicHandler {
         message: "Catatan berhasil dihapus",
       };
     } catch (error) {
+      if (error instanceof ClientError) {
+        const response = h.response({
+          status: "fail",
+          message: error.message,
+        });
+        response.code(error.statusCode);
+        return response;
+      }
+
+      // Server ERROR!
       const response = h.response({
-        status: "fail",
-        message: "Catatan gagal dihapus. Id tidak ditemukan",
+        status: "error",
+        message: "Maaf, terjadi kegagalan pada server kami.",
       });
-      response.code(404);
+      response.code(500);
+      console.error(error);
       return response;
     }
   }
