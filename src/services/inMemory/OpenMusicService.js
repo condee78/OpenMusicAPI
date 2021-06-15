@@ -4,48 +4,56 @@ const NotFoundError = require("../../exceptions/NotFoundError");
 
 class OpenMusicService {
   constructor() {
-    this._notes = [];
+    this._songs = [];
   }
 
-  addNote({ title, body, tags }) {
+  addSong({ title, year, performer, genre, duration }) {
     const id = nanoid(16);
-    const createdAt = new Date().toISOString();
-    const updatedAt = createdAt;
+    const insertedAt = new Date().toISOString();
+    const updatedAt = insertedAt;
 
-    const newNote = {
-      title,
-      tags,
-      body,
+    const newSong = {
       id,
-      createdAt,
+      title,
+      year,
+      performer,
+      genre,
+      duration,
+      insertedAt,
       updatedAt,
     };
 
-    this._notes.push(newNote);
-
-    const isSuccess = this._notes.filter((note) => note.id === id).length > 0;
+    this._songs.push(newSong);
+    console.log("masuuk", newSong);
+    const isSuccess = this._songs.filter((note) => note.id === id).length > 0;
 
     if (!isSuccess) {
-      throw new InvariantError("Catatan gagal ditambahkan");
+      throw new InvariantError("Lagu gagal ditambahkan");
     }
 
     return id;
   }
 
-  getNotes() {
-    return this._notes;
+  getSongs() {
+    return this._songs.map((song) => ({
+      id: song.id,
+      title: song.title,
+      performer: song.performer,
+    }));
+    // return this._songs;
   }
 
-  getNoteById(id) {
-    const note = this._notes.filter((n) => n.id === id)[0];
-    if (!note) {
+  getSongById(id) {
+    const song = this._songs.filter((n) => n.id === id)[0];
+    console.log("idnya", song);
+    if (!song) {
       throw new NotFoundError("Catatan tidak ditemukan");
     }
-    return note;
+    return song;
   }
 
-  editNoteById(id, { title, body, tags }) {
-    const index = this._notes.findIndex((note) => note.id === id);
+  editSongById(id, { title, year, performer, genre, duration }) {
+    const index = this._songs.findIndex((song) => song.id === id);
 
     if (index === -1) {
       throw new NotFoundError("Gagal memperbarui catatan. Id tidak ditemukan");
@@ -53,21 +61,23 @@ class OpenMusicService {
 
     const updatedAt = new Date().toISOString();
 
-    this._notes[index] = {
-      ...this._notes[index],
+    this._songs[index] = {
+      ...this._songs[index],
       title,
-      tags,
-      body,
+      year,
+      performer,
+      genre,
+      duration,
       updatedAt,
     };
   }
 
-  deleteNoteById(id) {
-    const index = this._notes.findIndex((note) => note.id === id);
+  deleteSongById(id) {
+    const index = this._songs.findIndex((song) => song.id === id);
     if (index === -1) {
-      throw new NotFoundError("Catatan gagal dihapus. Id tidak ditemukan");
+      throw new NotFoundError("lagu gagal dihapus. Id tidak ditemukan");
     }
-    this._notes.splice(index, 1);
+    this._songs.splice(index, 1);
   }
 }
 

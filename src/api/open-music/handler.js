@@ -5,26 +5,38 @@ class OpenMusicHandler {
     this._service = service;
     this._validator = validator;
 
-    this.postNoteHandler = this.postNoteHandler.bind(this);
-    this.getNotesHandler = this.getNotesHandler.bind(this);
-    this.getNoteByIdHandler = this.getNoteByIdHandler.bind(this);
-    this.putNoteByIdHandler = this.putNoteByIdHandler.bind(this);
-    this.deleteNoteByIdHandler = this.deleteNoteByIdHandler.bind(this);
+    this.postSonghandler = this.postSonghandler.bind(this);
+    this.getSongsHandler = this.getSongsHandler.bind(this);
+    this.getSongByIdHandler = this.getSongByIdHandler.bind(this);
+    this.putSongByIdHandler = this.putSongByIdHandler.bind(this);
+    this.deleteSongByIdHandler = this.deleteSongByIdHandler.bind(this);
   }
 
-  postNoteHandler(request, h) {
+  postSonghandler(request, h) {
     try {
       this._validator.validateOpenMusicPayload(request.payload);
 
-      const { title = "untitled", body, tags } = request.payload;
+      const {
+        title = "untitled",
+        year,
+        performer,
+        genre,
+        duration,
+      } = request.payload;
 
-      const noteId = this._service.addNote({ title, body, tags });
+      const songId = this._service.addSong({
+        title,
+        year,
+        performer,
+        genre,
+        duration,
+      });
 
       const response = h.response({
         status: "success",
-        message: "Catatan berhasil ditambahkan",
+        message: "Lagu berhasil ditambahkan",
         data: {
-          noteId,
+          songId,
         },
       });
       response.code(201);
@@ -50,24 +62,24 @@ class OpenMusicHandler {
     }
   }
 
-  getNotesHandler() {
-    const notes = this._service.getNotes();
+  getSongsHandler() {
+    const songs = this._service.getSongs();
     return {
       status: "success",
       data: {
-        notes,
+        songs,
       },
     };
   }
 
-  getNoteByIdHandler(request, h) {
+  getSongByIdHandler(request, h) {
     try {
       const { id } = request.params;
-      const note = this._service.getNoteById(id);
+      const song = this._service.getSongById(id);
       return {
         status: "success",
         data: {
-          note,
+          song,
         },
       };
     } catch (error) {
@@ -91,17 +103,17 @@ class OpenMusicHandler {
     }
   }
 
-  putNoteByIdHandler(request, h) {
+  putSongByIdHandler(request, h) {
     try {
       this._validator.validateOpenMusicPayload(request.payload);
 
       const { id } = request.params;
 
-      this._service.editNoteById(id, request.payload);
+      this._service.editSongById(id, request.payload);
 
       return {
         status: "success",
-        message: "Catatan berhasil diperbarui",
+        message: "lagu berhasil diperbarui",
       };
     } catch (error) {
       if (error instanceof ClientError) {
@@ -124,13 +136,13 @@ class OpenMusicHandler {
     }
   }
 
-  deleteNoteByIdHandler(request, h) {
+  deleteSongByIdHandler(request, h) {
     try {
       const { id } = request.params;
-      this._service.deleteNoteById(id);
+      this._service.deleteSongById(id);
       return {
         status: "success",
-        message: "Catatan berhasil dihapus",
+        message: "lagu berhasil dihapus",
       };
     } catch (error) {
       if (error instanceof ClientError) {
