@@ -12,7 +12,7 @@ class OpenMusicHandler {
     this.deleteSongByIdHandler = this.deleteSongByIdHandler.bind(this);
   }
 
-  postSonghandler(request, h) {
+  async postSonghandler(request, h) {
     try {
       this._validator.validateOpenMusicPayload(request.payload);
 
@@ -24,7 +24,7 @@ class OpenMusicHandler {
         duration,
       } = request.payload;
 
-      const songId = this._service.addSong({
+      const songId = await this._service.addSong({
         title,
         year,
         performer,
@@ -62,8 +62,8 @@ class OpenMusicHandler {
     }
   }
 
-  getSongsHandler() {
-    const songs = this._service.getSongs();
+  async getSongsHandler() {
+    const songs = await this._service.getSongs();
     return {
       status: "success",
       data: {
@@ -72,10 +72,10 @@ class OpenMusicHandler {
     };
   }
 
-  getSongByIdHandler(request, h) {
+  async getSongByIdHandler(request, h) {
     try {
       const { id } = request.params;
-      const song = this._service.getSongById(id);
+      const song = await this._service.getSongById(id);
       return {
         status: "success",
         data: {
@@ -103,13 +103,13 @@ class OpenMusicHandler {
     }
   }
 
-  putSongByIdHandler(request, h) {
+  async putSongByIdHandler(request, h) {
     try {
       this._validator.validateOpenMusicPayload(request.payload);
 
       const { id } = request.params;
 
-      this._service.editSongById(id, request.payload);
+      await this._service.editSongById(id, request.payload);
 
       return {
         status: "success",
@@ -136,10 +136,10 @@ class OpenMusicHandler {
     }
   }
 
-  deleteSongByIdHandler(request, h) {
+  async deleteSongByIdHandler(request, h) {
     try {
       const { id } = request.params;
-      this._service.deleteSongById(id);
+      await this._service.deleteSongById(id);
       return {
         status: "success",
         message: "lagu berhasil dihapus",

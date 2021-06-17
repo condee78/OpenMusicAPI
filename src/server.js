@@ -1,14 +1,16 @@
+require("dotenv").config();
+
 const Hapi = require("@hapi/hapi");
 const openMusic = require("./api/open-music");
-const OpenMusicService = require("./services/inMemory/OpenMusicService");
+const OpenMusicService = require("./services/postgres/OpenMusicService");
 const OpenMusicValidator = require("./validator/open-music");
 
 const init = async () => {
   const openMusicService = new OpenMusicService();
 
   const server = Hapi.server({
-    port: 5000,
-    host: process.env.NODE_ENV !== "production" ? "localhost" : "0.0.0.0",
+    port: process.env.PORT,
+    host: process.env.HOST,
     routes: {
       cors: {
         origin: ["*"],

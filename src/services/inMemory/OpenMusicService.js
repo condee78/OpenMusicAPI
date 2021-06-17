@@ -24,7 +24,6 @@ class OpenMusicService {
     };
 
     this._songs.push(newSong);
-    console.log("masuuk", newSong);
     const isSuccess = this._songs.filter((note) => note.id === id).length > 0;
 
     if (!isSuccess) {
@@ -40,12 +39,10 @@ class OpenMusicService {
       title: song.title,
       performer: song.performer,
     }));
-    // return this._songs;
   }
 
   getSongById(id) {
     const song = this._songs.filter((n) => n.id === id)[0];
-    console.log("idnya", song);
     if (!song) {
       throw new NotFoundError("Catatan tidak ditemukan");
     }
