@@ -14,6 +14,7 @@ class OpenMusicHandler {
 
   async postSonghandler(request, h) {
     try {
+      console.log("msuk", request);
       this._validator.validateOpenMusicPayload(request.payload);
 
       const {
@@ -24,14 +25,17 @@ class OpenMusicHandler {
         duration,
       } = request.payload;
 
+      const { id: credentialId } = request.auth.credentials;
+
       const songId = await this._service.addSong({
         title,
         year,
         performer,
         genre,
         duration,
+        owner: credentialId,
       });
-
+      console.log("testing", songId);
       const response = h.response({
         status: "success",
         message: "Lagu berhasil ditambahkan",
@@ -62,9 +66,10 @@ class OpenMusicHandler {
     }
   }
 
-  async getSongsHandler(h) {
+  async getSongsHandler(request, h) {
     try {
-      const songs = await this._service.getSongs();
+      const { id: credentialId } = request.auth.credentials;
+      const songs = await this._service.getSongs(credentialId);
       return {
         status: "success",
         data: {
@@ -94,7 +99,11 @@ class OpenMusicHandler {
   async getSongByIdHandler(request, h) {
     try {
       const { id } = request.params;
+      const { id: credentialId } = request.auth.credentials;
+
+      await this._service.verifySongOwner(id, credentialId);
       const song = await this._service.getSongById(id);
+
       return {
         status: "success",
         data: {
@@ -127,7 +136,9 @@ class OpenMusicHandler {
       this._validator.validateOpenMusicPayload(request.payload);
 
       const { id } = request.params;
+      const { id: credentialId } = request.auth.credentials;
 
+      await this._service.verifySongOwner(id, credentialId);
       await this._service.editSongById(id, request.payload);
 
       return {
@@ -158,7 +169,11 @@ class OpenMusicHandler {
   async deleteSongByIdHandler(request, h) {
     try {
       const { id } = request.params;
+      const { id: credentialId } = request.auth.credentials;
+
+      await this._service.verifySongOwner(id, credentialId);
       await this._service.deleteSongById(id);
+
       return {
         status: "success",
         message: "lagu berhasil dihapus",

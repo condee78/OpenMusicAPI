@@ -24,7 +24,7 @@ class OpenMusicService {
     };
 
     this._songs.push(newSong);
-    const isSuccess = this._songs.filter((note) => note.id === id).length > 0;
+    const isSuccess = this._songs.filter((song) => song.id === id).length > 0;
 
     if (!isSuccess) {
       throw new InvariantError("Lagu gagal ditambahkan");
@@ -44,7 +44,7 @@ class OpenMusicService {
   getSongById(id) {
     const song = this._songs.filter((n) => n.id === id)[0];
     if (!song) {
-      throw new NotFoundError("Catatan tidak ditemukan");
+      throw new NotFoundError("Lagu tidak ditemukan");
     }
     return song;
   }
@@ -53,7 +53,7 @@ class OpenMusicService {
     const index = this._songs.findIndex((song) => song.id === id);
 
     if (index === -1) {
-      throw new NotFoundError("Gagal memperbarui catatan. Id tidak ditemukan");
+      throw new NotFoundError("Gagal memperbarui lagu. Id tidak ditemukan");
     }
 
     const updatedAt = new Date().toISOString();

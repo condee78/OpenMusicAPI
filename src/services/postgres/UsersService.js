@@ -58,12 +58,14 @@ class UsersService {
   }
 
   async verifyUserCredential(username, password) {
+    console.log("masuk verify user", username);
     const query = {
       text: "SELECT id, password FROM users WHERE username = $1",
       values: [username],
     };
 
     const result = await this._pool.query(query);
+    console.log("result verify user", result);
 
     if (!result.rowCount) {
       throw new AuthenticationError("Kredensial yang Anda berikan salah");
