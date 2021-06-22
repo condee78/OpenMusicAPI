@@ -18,4 +18,10 @@ const mapDBToModel = ({
   updatedAt,
 });
 
-module.exports = { mapDBToModel };
+const mapDBToModelPlaylists = ({ id, name, username }) => ({
+  id,
+  name,
+  username,
+});
+
+module.exports = { mapDBToModel, mapDBToModelPlaylists };
