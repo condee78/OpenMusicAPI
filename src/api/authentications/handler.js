@@ -23,6 +23,7 @@ class AuthenticationsHandler {
         username,
         password
       );
+      console.log("idnya", id);
 
       const accessToken = this._tokenManager.generateAccessToken({ id });
       const refreshToken = this._tokenManager.generateRefreshToken({ id });

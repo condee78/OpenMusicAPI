@@ -3,10 +3,10 @@ require("dotenv").config();
 const Hapi = require("@hapi/hapi");
 const Jwt = require("@hapi/jwt");
 
-// open-music
-const openMusic = require("./api/open-music");
-const OpenMusicService = require("./services/postgres/OpenMusicService");
-const OpenMusicValidator = require("./validator/open-music");
+// songs
+const songs = require("./api/songs");
+const SongsService = require("./services/postgres/SongsService");
+const SongsValidator = require("./validator/songs");
 
 // users
 const users = require("./api/users");
@@ -20,7 +20,7 @@ const TokenManager = require("./tokenize/TokenManager");
 const AuthenticationsValidator = require("./validator/authentications");
 
 const init = async () => {
-  const openMusicService = new OpenMusicService();
+  const songsService = new SongsService();
   const usersService = new UsersService();
   const authenticationsService = new AuthenticationsService();
 
@@ -61,10 +61,10 @@ const init = async () => {
 
   await server.register([
     {
-      plugin: openMusic,
+      plugin: songs,
       options: {
-        service: openMusicService,
-        validator: OpenMusicValidator,
+        service: songsService,
+        validator: SongsValidator,
       },
     },
     {
