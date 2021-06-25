@@ -24,4 +24,14 @@ const mapDBToModelPlaylists = ({ id, name, username }) => ({
   username,
 });
 
-module.exports = { mapDBToModel, mapDBToModelPlaylists };
+const mapDBToModelPlaylistSongs = ({ id, title, performer }) => ({
+  id,
+  title,
+  performer,
+});
+
+module.exports = {
+  mapDBToModel,
+  mapDBToModelPlaylists,
+  mapDBToModelPlaylistSongs,
+};
