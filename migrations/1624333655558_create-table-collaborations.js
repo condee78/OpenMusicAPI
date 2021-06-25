@@ -32,8 +32,8 @@ exports.up = (pgm) => {
   // memberikan constraint foreign key pada kolom song_id dan user_id terhadap songs.id dan users.id
   pgm.addConstraint(
     "collaborations",
-    "fk_collaborations.playlist_songs.id",
-    "FOREIGN KEY(playlist_id) REFERENCES songs(id) ON DELETE CASCADE"
+    "fk_collaborations.playlist_playlists.id",
+    "FOREIGN KEY(playlist_id) REFERENCES playlists(id) ON DELETE CASCADE"
   );
   pgm.addConstraint(
     "collaborations",
