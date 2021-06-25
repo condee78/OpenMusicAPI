@@ -44,10 +44,11 @@ class PlaylistSongsService {
     return result.rows.map(mapDBToModelPlaylistSongs);
   }
 
-  async deletePlaylistSongById(songId) {
+  async deletePlaylistSongById(playlistid, songId) {
     const query = {
-      text: "DELETE FROM playlistsongs WHERE song_id = $1 RETURNING id",
-      values: [songId],
+      text:
+        "DELETE FROM playlistsongs WHERE playlist_id=$1 and song_id = $2 RETURNING id",
+      values: [playlistid, songId],
     };
 
     console.log("query delete ps", query);
@@ -55,7 +56,7 @@ class PlaylistSongsService {
     const result = await this._pool.query(query);
 
     if (!result.rowCount) {
-      throw new NotFoundError("Lagu gagal dihapus. Song Id tidak ditemukan");
+      throw new InvariantError("Lagu gagal dihapus. Song Id tidak ditemukan");
     }
   }
 
@@ -64,13 +65,14 @@ class PlaylistSongsService {
       text: "SELECT * FROM playlists WHERE id = $1",
       values: [id],
     };
-    console.log(query);
+    console.log("quuery verifyplaylis owner", query);
+    console.log("verifyplaylis owner", owner);
     const result = await this._pool.query(query);
     if (!result.rowCount) {
       throw new NotFoundError("Playlist tidak ditemukan");
     }
-    const note = result.rows[0];
-    if (note.owner !== owner) {
+    const playlist = result.rows[0];
+    if (playlist.owner !== owner) {
       throw new AuthorizationError("Anda tidak berhak mengakses resource ini");
     }
   }
