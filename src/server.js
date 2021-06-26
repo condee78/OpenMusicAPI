@@ -75,7 +75,6 @@ const init = async () => {
       },
     }),
   });
-  console.log("auth strategi", server.auth.strategy);
 
   await server.register([
     {

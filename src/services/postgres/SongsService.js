@@ -28,10 +28,8 @@ class SongsService {
         updatedAt,
       ],
     };
-    console.log(query);
 
     const result = await this._pool.query(query);
-    console.log(result);
 
     if (!result.rows[0].id) {
       throw new InvariantError("Lagu gagal ditambahkan");

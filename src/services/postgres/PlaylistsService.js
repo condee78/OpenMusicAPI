@@ -17,10 +17,8 @@ class PlaylistsService {
       text: "INSERT INTO playlists VALUES($1, $2, $3) RETURNING id",
       values: [id, name, owner],
     };
-    console.log(query);
 
     const result = await this._pool.query(query);
-    console.log(result);
 
     if (!result.rows[0].id) {
       throw new InvariantError("Playlist gagal ditambahkan");

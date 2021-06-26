@@ -14,7 +14,6 @@ class SongsHandler {
 
   async postSonghandler(request, h) {
     try {
-      console.log("msuk", request);
       this._validator.validateSongsPayload(request.payload);
 
       const {
@@ -25,9 +24,6 @@ class SongsHandler {
         duration,
       } = request.payload;
 
-      console.log("apa isinya", request.auth.credentials);
-      // const { id: credentialId } = request.auth.credentials;
-
       const songId = await this._service.addSong({
         title,
         year,
@@ -35,7 +31,7 @@ class SongsHandler {
         genre,
         duration,
       });
-      console.log("testing", songId);
+
       const response = h.response({
         status: "success",
         message: "Lagu berhasil ditambahkan",

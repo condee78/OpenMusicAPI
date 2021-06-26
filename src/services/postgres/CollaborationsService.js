@@ -44,7 +44,6 @@ class CollaborationsService {
         "SELECT * FROM collaborations WHERE playlist_id = $1 AND user_id = $2",
       values: [playlistId, userId],
     };
-    console.log("quuery verifycollab", query);
 
     const result = await this._pool.query(query);
 
