@@ -1,7 +1,5 @@
 /* eslint-disable camelcase */
 
-exports.shorthands = undefined;
-
 exports.up = (pgm) => {
   pgm.createTable("playlistsongs", {
     id: {
@@ -18,17 +16,12 @@ exports.up = (pgm) => {
     },
   });
 
-  /*
-      Menambahkan constraint UNIQUE, kombinasi dari kolom song_id dan user_id.
-      Guna menghindari duplikasi data antara nilai keduanya.
-    */
   pgm.addConstraint(
     "playlistsongs",
     "unique_playlist_id_and_song_id",
     "UNIQUE(playlist_id, song_id)"
   );
 
-  // memberikan constraint foreign key pada kolom song_id dan user_id terhadap songs.id dan users.id
   pgm.addConstraint(
     "playlistsongs",
     "fk_playlistsongs.playlist_id_playlists.id",
