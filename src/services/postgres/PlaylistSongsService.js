@@ -6,9 +6,10 @@ const AuthorizationError = require("../../exceptions/AuthorizationError");
 const { mapDBToModelPlaylistSongs } = require("../../utils");
 
 class PlaylistSongsService {
-  constructor(collaborationService) {
+  constructor(collaborationService, cacheService) {
     this._pool = new Pool();
     this._collaborationService = collaborationService;
+    this._cacheService = cacheService;
   }
 
   async addPlaylistSongs({ playlistId, songId }) {
@@ -25,22 +26,37 @@ class PlaylistSongsService {
       throw new InvariantError("Lagu Playlist gagal ditambahkan");
     }
 
+    await this._cacheService.delete(`playlists:${playlistId}`);
+
     // return result.rows[0].id;
   }
 
-  async getPlaylistSongs(owner) {
-    const query = {
-      text: `SELECT S.id, S.title, S.performer
+  async getPlaylistSongs(playlistId, owner) {
+    try {
+      // mendapatkan playlists dari cache
+      const result = await this._cacheService.get(`playlists:${playlistId}`);
+      return JSON.parse(result);
+    } catch (error) {
+      const query = {
+        text: `SELECT S.id, S.title, S.performer
       FROM playlistsongs as PS
       LEFT JOIN songs as S ON S.id = PS.song_id
       LEFT JOIN playlists as P ON P.id = PS.playlist_id
       LEFT JOIN collaborations ON collaborations.playlist_id = P.id
       WHERE P.owner = $1 OR collaborations.user_id = $1`,
-      values: [owner],
-    };
+        values: [owner],
+      };
 
-    const result = await this._pool.query(query);
-    return result.rows.map(mapDBToModelPlaylistSongs);
+      const result = await this._pool.query(query);
+      const mappedResult = result.rows.map(mapDBToModelPlaylistSongs);
+
+      await this._cacheService.set(
+        `playlists:${playlistId}`,
+        JSON.stringify(mappedResult)
+      );
+
+      return mappedResult;
+    }
   }
 
   async deletePlaylistSongById(playlistid, songId) {
@@ -55,6 +71,8 @@ class PlaylistSongsService {
     if (!result.rowCount) {
       throw new InvariantError("Lagu gagal dihapus. Song Id tidak ditemukan");
     }
+
+    await this._cacheService.delete(`playlists:${playlistid}`);
   }
 
   async verifyPlaylistOwner(id, owner) {

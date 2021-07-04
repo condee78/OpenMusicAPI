@@ -46,13 +46,20 @@ const uploads = require("./api/uploads");
 const StorageService = require("./services/storage/StorageService");
 const UploadsValidator = require("./validator/uploads");
 
+// cache
+const CacheService = require("./services/redis/CacheService");
+
 const init = async () => {
-  const collaborationsService = new CollaborationsService();
+  const cacheService = new CacheService();
+  const collaborationsService = new CollaborationsService(cacheService);
   const songsService = new SongsService();
   const usersService = new UsersService();
   const playlistsService = new PlaylistsService();
   const authenticationsService = new AuthenticationsService();
-  const playlistSongsService = new PlaylistSongsService(collaborationsService);
+  const playlistSongsService = new PlaylistSongsService(
+    collaborationsService,
+    cacheService
+  );
   const storageService = new StorageService(
     path.resolve(__dirname, "api/uploads/file/pictures")
   );
