@@ -26,15 +26,17 @@ class PlaylistSongsService {
       throw new InvariantError("Lagu Playlist gagal ditambahkan");
     }
 
-    await this._cacheService.delete(`playlists:${playlistId}`);
+    await this._cacheService.delete(`playlistsongs:${playlistId}`);
 
     // return result.rows[0].id;
   }
 
   async getPlaylistSongs(playlistId, owner) {
     try {
-      // mendapatkan playlists dari cache
-      const result = await this._cacheService.get(`playlists:${playlistId}`);
+      // mendapatkan playlistsongs dari cache
+      const result = await this._cacheService.get(
+        `playlistsongs:${playlistId}`
+      );
       return JSON.parse(result);
     } catch (error) {
       const query = {
@@ -51,7 +53,7 @@ class PlaylistSongsService {
       const mappedResult = result.rows.map(mapDBToModelPlaylistSongs);
 
       await this._cacheService.set(
-        `playlists:${playlistId}`,
+        `playlistsongs:${playlistId}`,
         JSON.stringify(mappedResult)
       );
 
@@ -72,7 +74,7 @@ class PlaylistSongsService {
       throw new InvariantError("Lagu gagal dihapus. Song Id tidak ditemukan");
     }
 
-    await this._cacheService.delete(`playlists:${playlistid}`);
+    await this._cacheService.delete(`playlistsongs:${playlistid}`);
   }
 
   async verifyPlaylistOwner(id, owner) {
